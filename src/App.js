@@ -4,6 +4,7 @@ import ExpenseItem from "./components/ExpenseItem";
 import Card from "./components/UI/Card";
 import NewExpense from "./components/NewExpense/NewExpense";
 import ExpensesFilter from "./components/Expenses/ExpenseFilter";
+import ExpensesChart from "./components/Expenses/ExpensesChart";
 
 function App() {
   const [expenses, setExpenses] = useState([
@@ -28,11 +29,14 @@ function App() {
     {
       id: "e4",
       title: "Mind Stone",
-      amount: 4.12,
-      date: new Date(2023, 6, 25),
+      amount: 4343.12,
+      date: new Date(2022, 7, 25),
     },
   ]);
   const [filteredYear, setFilteredYear] = useState("2021");
+  const filtedredExpenses = expenses.filter(
+    (expense) => expense.date.getFullYear().toString() === filteredYear
+  );
 
   const filterChangeHandler = (year) => {
     setFilteredYear(year);
@@ -50,11 +54,13 @@ function App() {
           selected={filteredYear}
           onChangeFilter={filterChangeHandler}
         />
-        {expenses
-          .filter(
-            (expense) => expense.date.getFullYear().toString() === filteredYear
-          )
-          .map((expense) => (
+        <ExpensesChart expenses={filtedredExpenses} />
+        {filtedredExpenses.length === 0 ? (
+          <h2 className="expenses-list__fallback">
+            No expenses found in this year
+          </h2>
+        ) : (
+          filtedredExpenses.map((expense) => (
             <ExpenseItem
               key={expense.id}
               id={expense.id}
@@ -62,7 +68,8 @@ function App() {
               amount={expense.amount}
               date={expense.date}
             />
-          ))}
+          ))
+        )}
       </Card>
     </div>
   );
